@@ -349,6 +349,44 @@ RSpec.describe Api::V1::DnsRecordsController, type: :controller do
   end
 
   describe '#create' do
-    # TODO
+    # before do
+    #   request.accept = 'application/json'
+    #   request.content_type = 'application/json'
+
+    #   post(:create, body: payload, format: :json)
+    # end
+
+    # context 'with valid payload' do
+    #   let(:payload) do
+    #     {
+    #       dns_records: {
+    #         id: 3,
+    #         ip: '1.1.1.1',
+    #         hostnames_attributes: [
+    #           {
+    #             hostname: 'lorem'
+    #           },
+    #           {
+    #             hostname: 'ipsum'
+    #           },
+    #           {
+    #             hostname: 'dolor'
+    #           },
+    #           {
+    #             hostname: 'amet'
+    #           }
+    #         ]
+    #       }
+    #     }.to_json
+    #   end
+
+    #   it 'responds with created status' do
+    #     expect(response).to have_http_status(:created)
+    #   end
+
+    #   it 'returns the created dns record id' do
+    #     expect(parsed_body).to eq(id: 3)
+    #   end
+    # end
   end
 end
