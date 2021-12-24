@@ -4,7 +4,8 @@ module Api
       before_action :validate_index, only: [:index]
 
       def index
-
+        binding.pry
+        render json: {}, status: :ok
       end
 
       # POST /dns_records
