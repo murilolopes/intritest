@@ -349,44 +349,65 @@ RSpec.describe Api::V1::DnsRecordsController, type: :controller do
   end
 
   describe '#create' do
-    # before do
-    #   request.accept = 'application/json'
-    #   request.content_type = 'application/json'
+    context 'with valid payload' do
+      before do
+        request.accept = 'application/json'
+        request.content_type = 'application/json'
 
-    #   post(:create, body: payload, format: :json)
-    # end
+        post(:create, body: payload, format: :json)
+      end
 
-    # context 'with valid payload' do
-    #   let(:payload) do
-    #     {
-    #       dns_records: {
-    #         id: 3,
-    #         ip: '1.1.1.1',
-    #         hostnames_attributes: [
-    #           {
-    #             hostname: 'lorem'
-    #           },
-    #           {
-    #             hostname: 'ipsum'
-    #           },
-    #           {
-    #             hostname: 'dolor'
-    #           },
-    #           {
-    #             hostname: 'amet'
-    #           }
-    #         ]
-    #       }
-    #     }.to_json
-    #   end
+      let(:payload) do
+        {
+          dns_records: {
+            id: '1',
+            ip: '1.1.1.1',
+            hostnames_attributes: [
+              {
+                hostname: 'lorem'
+              },
+              {
+                hostname: 'ipsum'
+              },
+              {
+                hostname: 'dolor'
+              },
+              {
+                hostname: 'amet'
+              }
+            ]
+          }
+        }.to_json
+      end
 
-    #   it 'responds with created status' do
-    #     expect(response).to have_http_status(:created)
-    #   end
+      it 'responds with created status' do
+        expect(response).to have_http_status(:created)
+      end
 
-    #   it 'returns the created dns record id' do
-    #     expect(parsed_body).to eq(id: 3)
-    #   end
-    # end
+      it 'returns the created dns record id' do
+        expect(parsed_body).to eq(id: 1)
+      end
+    end
+
+    context 'with invalid payload' do
+      before do
+        request.accept = 'application/json'
+        request.content_type = 'application/json'
+
+        post(:create, body: payload, format: :json)
+      end
+
+      let(:payload) do
+        {}.to_json
+      end
+
+      it 'responds with unprocessable_entity status' do
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it 'responds with errors' do
+        expect(parsed_body).to eq(errors: { ip: ["can't be blank"] })
+      end
+    end
   end
 end
