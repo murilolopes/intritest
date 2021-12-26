@@ -6,6 +6,12 @@ module Api
       def index
         dns_query = DnsRecord.page(params[:page]).per(5)
 
+        if params[:included]
+          hostnames_ids = Hostname.where(hostname: params[:included].split(",")).pluck(:id)
+          binding.pry
+          dns_query = dns_query.joins(:dns_records_hostnames).where('dns_records_hostnames.hostname_id', hostnames_ids)
+        end
+
         hostnames = Hostname.pluck(:hostname).uniq
 
         response = {
