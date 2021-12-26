@@ -24,7 +24,11 @@ module Api
       end
 
       def create
-        dns_record = DnsRecord.create(create_params[:dns_records])
+        dns_record = DnsRecord.find_or_create_by(ip: create_params[:dns_records][:ip])
+
+        create_params[:dns_records][:hostnames_attributes].each do |hostname|
+          dns_record.hostnames << Hostname.first_or_create(hostname)
+        end if dns_record.valid?
 
         response = { data: { id: dns_record.id }, status: :created } if dns_record.persisted?
         response = { data: { errors: dns_record.errors }, status: :unprocessable_entity } if dns_record.invalid?

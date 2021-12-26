@@ -361,7 +361,6 @@ RSpec.describe Api::V1::DnsRecordsController, type: :controller do
       let(:payload) do
         {
           dns_records: {
-            id: '1',
             ip: '1.1.1.1',
             hostnames_attributes: [
               {
@@ -386,7 +385,45 @@ RSpec.describe Api::V1::DnsRecordsController, type: :controller do
       end
 
       it 'returns the created dns record id' do
-        expect(parsed_body).to eq(id: 1)
+        expect(parsed_body).to eq(id: DnsRecord.last.id)
+      end
+    end
+
+    context 'with valid payload with previous hostname created' do
+      before do
+        request.accept = 'application/json'
+        request.content_type = 'application/json'
+
+        dns = DnsRecord.create(ip: '2.2.2.2')
+        dns.hostnames.create(hostname: 'lorem')
+
+        post(:create, body: payload, format: :json)
+      end
+
+      let(:payload) do
+        {
+          dns_records: {
+            ip: '1.1.1.1',
+            hostnames_attributes: [
+              {
+                hostname: 'lorem'
+              },
+            ]
+          }
+        }.to_json
+      end
+
+      it 'responds with created status' do
+        expect(response).to have_http_status(:created)
+      end
+
+      it 'returns the created dns record id' do
+        expect(parsed_body).to eq(id: DnsRecord.last.id)
+      end
+
+      it 'should have created only one hostname' do
+        expect(Hostname.where(hostname: 'lorem').count).to eq(1)
+        expect(DnsRecord.count).to eq(2)
       end
     end
 
@@ -399,7 +436,11 @@ RSpec.describe Api::V1::DnsRecordsController, type: :controller do
       end
 
       let(:payload) do
-        {}.to_json
+        {
+          dns_records: {
+            ip: '',
+          }
+        }.to_json
       end
 
       it 'responds with unprocessable_entity status' do
