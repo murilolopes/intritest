@@ -4,7 +4,17 @@ module Api
       before_action :validate_index, only: [:index]
 
       def index
-        render json: {}, status: :ok
+        dns_query = DnsRecord.page(params[:page]).per(5)
+
+        hostnames = Hostname.pluck(:hostname).uniq
+
+        response = {
+          total_records: dns_query.count,
+          records: dns_query.map { |record| { id: record.id, ip_address: record.ip } },
+          related_hostnames: hostnames.map { |record| { count: Hostname.where(hostname: record).count, hostname: record } }
+        }
+
+        render json: response, status: :ok
       end
 
       def create
@@ -19,7 +29,7 @@ module Api
       private
 
       def validate_index
-        return render json: { error: 'Required paramet PAGE was not provided' }, status: :unprocessable_entity unless params[:page]
+        render json: { error: 'Required paramet PAGE was not provided' }, status: :unprocessable_entity unless params[:page]
       end
 
       def create_params
