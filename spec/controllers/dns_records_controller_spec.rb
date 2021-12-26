@@ -127,23 +127,23 @@ RSpec.describe Api::V1::DnsRecordsController, type: :controller do
             total_records: 5,
             records: [
               {
-                id: 1,
+                id: 6,
                 ip_address: ip1
               },
               {
-                id: 2,
+                id: 7,
                 ip_address: ip2
               },
               {
-                id: 3,
+                id: 8,
                 ip_address: ip3
               },
               {
-                id: 4,
+                id: 9,
                 ip_address: ip4
               },
               {
-                id: 5,
+                id: 10,
                 ip_address: ip5
               }
             ],
